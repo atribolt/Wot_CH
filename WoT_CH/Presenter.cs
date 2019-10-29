@@ -6,15 +6,32 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace WoT_CH {
 	public class Presenter {
 		IForm1 iForm;
 		IEditor iEdit;
-		
+		float scale = 1;
+		BackImage Background = BackImage.SimpleCircle;
+		InterpolationMode tileInterpMode = InterpolationMode.Default;
+
 		bool PNG = false;
 		int CountAtlases = 0;
+
 		Bitmap tile;
+		Bitmap ScaleTile {
+			get {
+				try {
+					return new Bitmap(tile, 
+							new Size((int)(tile.Width * scale), (int)(tile.Height * scale)));
+				}
+				catch (Exception) {
+					return new Bitmap(tile, 
+							new Size((int)(tile.Width * 0.1), (int)(tile.Height * 0.1)));
+				}
+			}
+		}
 
 		public Presenter(IForm1 form, IEditor iEditor) {
 			iForm = form;
@@ -23,6 +40,8 @@ namespace WoT_CH {
 			iForm.ExitClk += ShowMessageWithoutExit;
 			iForm.AboutClk += ShowAbout;
 			
+			iForm.ResetFile += Reset;
+			iForm.FormResize += DrawTile;
 			iForm.ChangeImage += SetBackground;
 			iForm.ChangeLayer += UpdateActiveLayer;
 			iForm.ChangeLayer += UpdateCounter;
@@ -30,12 +49,11 @@ namespace WoT_CH {
 			iForm.FileSaveClk += SaveFile;
 			iForm.ChangeOffset += EditDataLayer;
 			iForm.FileSaveAsClk += SaveAsFile;
-			iForm.FormResize += DrawTile;
 			iForm.BackgroundUpdate += DrawTile;
-			iForm.ResetFile += Reset;
+			iForm.ChangeTileScale += SetScale;
+			iForm.ChangeInterpolationTile += SetInterpolation;
 
 			iForm.DisableBtns();
-			//FindAtlas(iEdit.Texs());
 		}
 
 		#region >>> iForm events handler
@@ -96,6 +114,12 @@ namespace WoT_CH {
 			tile = TileFromLayer();
 			DrawTile();
 		}
+		
+		void SetScale(int value) {
+			scale += value / 10.0F;
+			if(scale <= 0) scale = 0.1F;
+			DrawTile();
+		}
 
 		void EditDataLayer(int ox, int oy) {
 			iEdit.SetOffset(ox, oy);
@@ -105,18 +129,26 @@ namespace WoT_CH {
 		}
 
 		void SetBackground(BackImage bgrnd) {
-			string path = path = Resource.Get(Res.Cross);
+			Background = bgrnd;
+			DrawTile();
+			//string path = path = Resource.Get(Res.Cross);
 
-			switch (bgrnd) {
-				//case BackImage.Cross:        path = Resource.Get(Res.Cross);	    break;
-				case BackImage.GameCircle:   path = Resource.Get(Res.GameCircle);   break;
-				case BackImage.SimpleCircle: path = Resource.Get(Res.SimpleCircle); break;
-				default: break;
-			}
+			//switch (bgrnd) {
+			//	//case BackImage.Cross:        path = Resource.Get(Res.Cross);	    break;
+			//	case BackImage.GameCircle:   path = Resource.Get(Res.GameCircle);   break;
+			//	case BackImage.SimpleCircle: path = Resource.Get(Res.SimpleCircle); break;
+			//	default: break;
+			//}
 
-			iForm.SetBackground(path);
+			//iForm.SetBackground(path);
 		}
 		
+		void SetInterpolation(InterpolationMode mode) {
+			tileInterpMode = mode;
+
+			DrawTile();
+		}
+
 		void SetForm() {
 			int size = iEdit.GetLayers().Length;
 
@@ -189,22 +221,44 @@ namespace WoT_CH {
 
 			return res;
 		}
-		
+		void DrawCross(ref Graphics g) {
+			int width = iForm.ShowTile.Width;
+			int height = iForm.ShowTile.Height;
+			int x = width / 2;
+			int y = height / 2;
+
+			g.DrawLine(Pens.Black, new Point(x, 0), new Point(x, height)); // vertical
+			g.DrawLine(Pens.Black, new Point(0, y), new Point(width, y)); // horizontal
+		}
+		void DrawCircle(ref Graphics g) {
+			int radius = 100;
+			float x = iForm.ShowTile.Width / 2 - radius;
+			float y = iForm.ShowTile.Height / 2 - radius;
+			g.DrawArc(Pens.Black, x, y, 2 * radius, 2 * radius, 0, 360);
+			
+		}
 		void DrawTile() {
 			if(iEdit.State == FileState.OK) {
 				iForm.ShowTile.Refresh();
-
 				Graphics g = iForm.ShowTile.CreateGraphics();
 
-				Point offset = iEdit.GetLayer().Offset;
+				switch (Background) {
+					case BackImage.Cross: DrawCross(ref g); break;
+					case BackImage.SimpleCircle: DrawCircle(ref g); break;
+				}
 
-				int Ox = (iForm.ShowTile.Width - tile.Width) / 2;
-				int Oy = (iForm.ShowTile.Height + tile.Height) / 2;
+				g.InterpolationMode = tileInterpMode;
 
-				g.TranslateTransform(Ox, Oy);
 				
-			
-				g.DrawImage(tile, offset);
+				
+				Point offset = iEdit.GetLayer().Offset;
+				
+				int x = offset.X + (iForm.ShowTile.Width - ScaleTile.Width) / 2;
+				int y = offset.Y + (iForm.ShowTile.Height - ScaleTile.Height) / 2;
+				if(iEdit.Path.Contains("GunAim"))
+					y = offset.Y + (iForm.ShowTile.Height + ScaleTile.Height) / 2;
+
+				g.DrawImage(ScaleTile, x, y);
 			}
 		}
 	}

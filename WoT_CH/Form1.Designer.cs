@@ -23,6 +23,7 @@
 		/// содержимое этого метода с помощью редактора кода.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.lbl_Images = new System.Windows.Forms.ToolStripStatusLabel();
 			this.lbl_ImageFound = new System.Windows.Forms.ToolStripStatusLabel();
@@ -36,6 +37,12 @@
 			this.menu_About = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Edit = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Refresh = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_Settings = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_Language = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_LanguageRU = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_LanguageEN = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_Render = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_SmoothMode = new System.Windows.Forms.ToolStripMenuItem();
 			this.lb_Layers = new System.Windows.Forms.ListBox();
 			this.pb_ShowCrosshair = new System.Windows.Forms.PictureBox();
 			this.gb_SetShift = new System.Windows.Forms.GroupBox();
@@ -47,6 +54,15 @@
 			this.rb_Back_GameCircle = new System.Windows.Forms.RadioButton();
 			this.rb_Back_Cross = new System.Windows.Forms.RadioButton();
 			this.rb_Back_Circle = new System.Windows.Forms.RadioButton();
+			this.tt_ShowInfoElement = new System.Windows.Forms.ToolTip(this.components);
+			this.menu_IM_BC = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_BL = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_H = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_L = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_NN = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_HQBL = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_HQBC = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_D = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pb_ShowCrosshair)).BeginInit();
@@ -83,7 +99,8 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_File,
             this.menu_FAQ,
-            this.menu_Edit});
+            this.menu_Edit,
+            this.menu_Settings});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(659, 24);
@@ -104,25 +121,25 @@
 			// menu_OpenTxt
 			// 
 			this.menu_OpenTxt.Name = "menu_OpenTxt";
-			this.menu_OpenTxt.Size = new System.Drawing.Size(127, 22);
+			this.menu_OpenTxt.Size = new System.Drawing.Size(180, 22);
 			this.menu_OpenTxt.Text = "Open TXT";
 			// 
 			// menu_SaveTxt
 			// 
 			this.menu_SaveTxt.Name = "menu_SaveTxt";
-			this.menu_SaveTxt.Size = new System.Drawing.Size(127, 22);
+			this.menu_SaveTxt.Size = new System.Drawing.Size(180, 22);
 			this.menu_SaveTxt.Text = "Save";
 			// 
 			// menu_SaveAs
 			// 
 			this.menu_SaveAs.Name = "menu_SaveAs";
-			this.menu_SaveAs.Size = new System.Drawing.Size(127, 22);
+			this.menu_SaveAs.Size = new System.Drawing.Size(180, 22);
 			this.menu_SaveAs.Text = "Save as";
 			// 
 			// menu_Exit
 			// 
 			this.menu_Exit.Name = "menu_Exit";
-			this.menu_Exit.Size = new System.Drawing.Size(127, 22);
+			this.menu_Exit.Size = new System.Drawing.Size(180, 22);
 			this.menu_Exit.Text = "Exit";
 			// 
 			// menu_FAQ
@@ -150,17 +167,71 @@
 			// menu_Refresh
 			// 
 			this.menu_Refresh.Name = "menu_Refresh";
-			this.menu_Refresh.Size = new System.Drawing.Size(113, 22);
+			this.menu_Refresh.Size = new System.Drawing.Size(180, 22);
 			this.menu_Refresh.Text = "Refresh";
+			// 
+			// menu_Settings
+			// 
+			this.menu_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_Language,
+            this.menu_Render});
+			this.menu_Settings.Name = "menu_Settings";
+			this.menu_Settings.Size = new System.Drawing.Size(61, 20);
+			this.menu_Settings.Text = "Settings";
+			// 
+			// menu_Language
+			// 
+			this.menu_Language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_LanguageRU,
+            this.menu_LanguageEN});
+			this.menu_Language.Name = "menu_Language";
+			this.menu_Language.Size = new System.Drawing.Size(180, 22);
+			this.menu_Language.Text = "Language";
+			// 
+			// menu_LanguageRU
+			// 
+			this.menu_LanguageRU.Name = "menu_LanguageRU";
+			this.menu_LanguageRU.Size = new System.Drawing.Size(180, 22);
+			this.menu_LanguageRU.Text = "Русский";
+			// 
+			// menu_LanguageEN
+			// 
+			this.menu_LanguageEN.Name = "menu_LanguageEN";
+			this.menu_LanguageEN.Size = new System.Drawing.Size(180, 22);
+			this.menu_LanguageEN.Text = "English";
+			// 
+			// menu_Render
+			// 
+			this.menu_Render.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_SmoothMode});
+			this.menu_Render.Name = "menu_Render";
+			this.menu_Render.Size = new System.Drawing.Size(180, 22);
+			this.menu_Render.Text = "RenderMode";
+			// 
+			// menu_SmoothMode
+			// 
+			this.menu_SmoothMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_IM_BC,
+            this.menu_IM_BL,
+            this.menu_IM_H,
+            this.menu_IM_L,
+            this.menu_IM_NN,
+            this.menu_IM_HQBL,
+            this.menu_IM_HQBC,
+            this.menu_IM_D});
+			this.menu_SmoothMode.Name = "menu_SmoothMode";
+			this.menu_SmoothMode.Size = new System.Drawing.Size(180, 22);
+			this.menu_SmoothMode.Text = "SmoothMode";
 			// 
 			// lb_Layers
 			// 
 			this.lb_Layers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.lb_Layers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.lb_Layers.FormattingEnabled = true;
 			this.lb_Layers.Location = new System.Drawing.Point(14, 28);
 			this.lb_Layers.Name = "lb_Layers";
-			this.lb_Layers.Size = new System.Drawing.Size(151, 173);
+			this.lb_Layers.Size = new System.Drawing.Size(151, 171);
 			this.lb_Layers.TabIndex = 2;
 			this.lb_Layers.TabStop = false;
 			// 
@@ -169,11 +240,12 @@
 			this.pb_ShowCrosshair.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.pb_ShowCrosshair.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.pb_ShowCrosshair.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.pb_ShowCrosshair.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pb_ShowCrosshair.Location = new System.Drawing.Point(171, 28);
 			this.pb_ShowCrosshair.Name = "pb_ShowCrosshair";
 			this.pb_ShowCrosshair.Size = new System.Drawing.Size(338, 185);
+			this.pb_ShowCrosshair.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pb_ShowCrosshair.TabIndex = 3;
 			this.pb_ShowCrosshair.TabStop = false;
 			// 
@@ -211,6 +283,7 @@
 			// 
 			// nud_ShiftY
 			// 
+			this.nud_ShiftY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.nud_ShiftY.Location = new System.Drawing.Point(26, 48);
 			this.nud_ShiftY.Maximum = new decimal(new int[] {
             10000,
@@ -229,6 +302,7 @@
 			// 
 			// nud_ShiftX
 			// 
+			this.nud_ShiftX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.nud_ShiftX.Location = new System.Drawing.Point(26, 19);
 			this.nud_ShiftX.Maximum = new decimal(new int[] {
             10000,
@@ -261,6 +335,7 @@
 			// rb_Back_GameCircle
 			// 
 			this.rb_Back_GameCircle.AutoSize = true;
+			this.rb_Back_GameCircle.Enabled = false;
 			this.rb_Back_GameCircle.Location = new System.Drawing.Point(9, 67);
 			this.rb_Back_GameCircle.Name = "rb_Back_GameCircle";
 			this.rb_Back_GameCircle.Size = new System.Drawing.Size(81, 17);
@@ -291,6 +366,54 @@
 			this.rb_Back_Circle.TabStop = true;
 			this.rb_Back_Circle.Text = "Circle";
 			this.rb_Back_Circle.UseVisualStyleBackColor = true;
+			// 
+			// menu_IM_BC
+			// 
+			this.menu_IM_BC.Name = "menu_IM_BC";
+			this.menu_IM_BC.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_BC.Text = "Bicubic";
+			// 
+			// menu_IM_BL
+			// 
+			this.menu_IM_BL.Name = "menu_IM_BL";
+			this.menu_IM_BL.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_BL.Text = "Bilinear";
+			// 
+			// menu_IM_H
+			// 
+			this.menu_IM_H.Name = "menu_IM_H";
+			this.menu_IM_H.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_H.Text = "High";
+			// 
+			// menu_IM_L
+			// 
+			this.menu_IM_L.Name = "menu_IM_L";
+			this.menu_IM_L.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_L.Text = "Low";
+			// 
+			// menu_IM_NN
+			// 
+			this.menu_IM_NN.Name = "menu_IM_NN";
+			this.menu_IM_NN.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_NN.Text = "NearestNeighbor";
+			// 
+			// menu_IM_HQBL
+			// 
+			this.menu_IM_HQBL.Name = "menu_IM_HQBL";
+			this.menu_IM_HQBL.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_HQBL.Text = "HighQualityBilinear";
+			// 
+			// menu_IM_HQBC
+			// 
+			this.menu_IM_HQBC.Name = "menu_IM_HQBC";
+			this.menu_IM_HQBC.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_HQBC.Text = "HighQualityBicubic";
+			// 
+			// menu_IM_D
+			// 
+			this.menu_IM_D.Name = "menu_IM_D";
+			this.menu_IM_D.Size = new System.Drawing.Size(180, 22);
+			this.menu_IM_D.Text = "Default";
 			// 
 			// Form1
 			// 
@@ -350,6 +473,21 @@
 		private System.Windows.Forms.RadioButton rb_Back_Circle;
 		private System.Windows.Forms.ToolStripMenuItem menu_Edit;
 		private System.Windows.Forms.ToolStripMenuItem menu_Refresh;
+		private System.Windows.Forms.ToolStripMenuItem menu_Settings;
+		private System.Windows.Forms.ToolStripMenuItem menu_Language;
+		private System.Windows.Forms.ToolStripMenuItem menu_LanguageRU;
+		private System.Windows.Forms.ToolStripMenuItem menu_LanguageEN;
+		private System.Windows.Forms.ToolStripMenuItem menu_Render;
+		private System.Windows.Forms.ToolStripMenuItem menu_SmoothMode;
+		private System.Windows.Forms.ToolTip tt_ShowInfoElement;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_BC;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_BL;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_H;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_L;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_NN;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_HQBL;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_HQBC;
+		private System.Windows.Forms.ToolStripMenuItem menu_IM_D;
 	}
 }
 

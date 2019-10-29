@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,8 +26,10 @@ namespace WoT_CH {
 		event Action BackgroundUpdate;
 		
 		event Action<int> ChangeLayer;
+		event Action<int> ChangeTileScale;
 		event Action<int, int> ChangeOffset;
 		event Action<BackImage> ChangeImage;
+		event Action<InterpolationMode> ChangeInterpolationTile;
 
 		PictureBox ShowTile { get; }
 
@@ -41,6 +44,9 @@ namespace WoT_CH {
 	}
 
 	public partial class Form1 : Form, IForm1 {
+		const int MIN_TILE_SCALE = 1;
+		const int MAX_TILE_SCALE = 20;
+	
 		public PictureBox ShowTile {
 			get { return pb_ShowCrosshair; }
 		}
@@ -62,13 +68,20 @@ namespace WoT_CH {
 			menu_Edit.Text			= Words.Get(Key.Edit);
 			menu_Exit.Text			= Words.Get(Key.Exit);
 			menu_File.Text			= Words.Get(Key.Menu);
-			lbl_Images.Text			= Words.Get(Key.ImageFound);
 			menu_About.Text			= Words.Get(Key.About);
-			gb_SetShift.Text		= Words.Get(Key.Shift);
 			menu_SaveAs.Text		= Words.Get(Key.SaveAs);
+			menu_Render.Text		= Words.Get(Key.RenderMode);
 			menu_OpenTxt.Text		= Words.Get(Key.OpenTXT);
 			menu_Refresh.Text		= Words.Get(Key.Refresh);
 			menu_SaveTxt.Text		= Words.Get(Key.Save);
+			menu_Settings.Text		= Words.Get(Key.Settings);
+			menu_Language.Text		= Words.Get(Key.Language);
+			menu_SmoothMode.Text	= Words.Get(Key.SmoothMode);
+
+			lbl_Images.Text			= Words.Get(Key.ImageFound);
+
+			gb_SetShift.Text		= Words.Get(Key.Shift);
+
 			rb_Back_Cross.Text		= Words.Get(Key.Cross);
 			rb_Back_Circle.Text		= Words.Get(Key.SimpleCircle);
 			rb_Back_GameCircle.Text = Words.Get(Key.GameCircle);
@@ -81,6 +94,18 @@ namespace WoT_CH {
 			menu_OpenTxt.Click += mOpenClk;
 			menu_SaveTxt.Click += mSaveClk;
 			menu_Refresh.Click += mRefreshClk;
+
+			menu_LanguageRU.Click += langUpdate;
+			menu_LanguageEN.Click += langUpdate;
+
+			menu_IM_BC.Click += setInterpolation;
+			menu_IM_BL.Click += setInterpolation;
+			menu_IM_D.Click += setInterpolation;
+			menu_IM_L.Click += setInterpolation;
+			menu_IM_H.Click += setInterpolation;
+			menu_IM_NN.Click += setInterpolation;
+			menu_IM_HQBC.Click += setInterpolation;
+			menu_IM_HQBL.Click += setInterpolation;
 		}
 		void SetEventModifyLayer() {
 			nud_ShiftX.ValueChanged += setOffset;
@@ -96,7 +121,11 @@ namespace WoT_CH {
 			this.FormClosing += formClosing;
 			this.ResizeEnd += formResize;
 			
+			
+			pb_ShowCrosshair.MouseWheel += scaleTilSet;
+			pb_ShowCrosshair.MouseClick += changeBackColor;
 			pb_ShowCrosshair.BackgroundImageChanged += backgroundChanged;
+			pb_ShowCrosshair.MouseMove += moveTile;
 		}
 
 		#region >>> IForm1
@@ -109,9 +138,11 @@ namespace WoT_CH {
 		public event Action FileSaveAsClk    = delegate{ };
 		public event Action BackgroundUpdate = delegate{ };
 
-		public event Action<int> ChangeLayer	   = delegate { };
+		public event Action<int> ChangeLayer	   = delegate{ };
+		public event Action<int> ChangeTileScale   = delegate{ };
 		public event Action<int, int> ChangeOffset = delegate{ };
 		public event Action<BackImage> ChangeImage = delegate{ };
+		public event Action<InterpolationMode> ChangeInterpolationTile = delegate { };
 
 		public void SetNumerics(int x, int y) {
 			nud_ShiftX.Value = x;
@@ -160,6 +191,16 @@ namespace WoT_CH {
 		void mAboutClk (object o, EventArgs e) => AboutClk();
 		void mSaveAsClk(object o, EventArgs e) => FileSaveAsClk();
 		void mRefreshClk(object o, EventArgs e) => ResetFile();
+		
+		void langUpdate(object o, EventArgs e) {
+			if ((ToolStripMenuItem)o == menu_LanguageEN) Words.ReadLanguageCFG(Lang.en); else 
+			if ((ToolStripMenuItem)o == menu_LanguageRU) Words.ReadLanguageCFG(Lang.ru);
+		}
+
+		void setInterpolation(object o, EventArgs e) {
+			InterpolationMode mode = (InterpolationMode)Enum.Parse(typeof(InterpolationMode), ((ToolStripMenuItem)o).Text);
+			ChangeInterpolationTile(mode);
+		}
 		#endregion
 
 		#region >>> EventsModifyLayer
@@ -177,10 +218,8 @@ namespace WoT_CH {
 		#region >>> EventOther
 		void changeBackground(object o, EventArgs e) {
 			BackImage back = BackImage.SimpleCircle;
-
-			if (rb_Back_Cross.Checked)      back = BackImage.Cross;		 else
-			if (rb_Back_GameCircle.Checked)	back = BackImage.GameCircle;
-
+			if (rb_Back_Cross.Checked)
+				back = BackImage.Cross;
 			ChangeImage(back);
 		}
 
@@ -188,9 +227,36 @@ namespace WoT_CH {
 
 		void backgroundChanged(object o, EventArgs e) => BackgroundUpdate();
 		
+		void changeBackColor(object o, MouseEventArgs me) {
+			if(me.Button == MouseButtons.Right) {
+				ColorDialog cd = new ColorDialog();
+
+				if(cd.ShowDialog() == DialogResult.OK) {
+					((Control)o).BackColor = cd.Color;
+				}
+				BackgroundUpdate();
+			}
+		}
+		void moveTile(object o, MouseEventArgs me) {
+			if(me.Button == MouseButtons.Left) {
+				int x = me.Location.X - pb_ShowCrosshair.Width / 2;
+				int y = me.Location.Y - pb_ShowCrosshair.Height / 2;
+
+				SetNumerics(x, y);
+			}
+		}
+
 		void formResize(object o , EventArgs e) {
 			FormResize();
 		}
+
+		void scaleTilSet(object o, MouseEventArgs me) {
+			int incr = 1;
+
+			if(me.Delta < 0) incr = -1;
+			ChangeTileScale(incr);
+		}
 		#endregion
+		
 	}
 }
