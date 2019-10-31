@@ -43,6 +43,14 @@
 			this.menu_LanguageEN = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Render = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_SmoothMode = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_BC = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_BL = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_H = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_L = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_NN = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_HQBL = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_HQBC = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_IM_D = new System.Windows.Forms.ToolStripMenuItem();
 			this.lb_Layers = new System.Windows.Forms.ListBox();
 			this.pb_ShowCrosshair = new System.Windows.Forms.PictureBox();
 			this.gb_SetShift = new System.Windows.Forms.GroupBox();
@@ -55,14 +63,8 @@
 			this.rb_Back_Cross = new System.Windows.Forms.RadioButton();
 			this.rb_Back_Circle = new System.Windows.Forms.RadioButton();
 			this.tt_ShowInfoElement = new System.Windows.Forms.ToolTip(this.components);
-			this.menu_IM_BC = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_BL = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_H = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_L = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_NN = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_HQBL = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_HQBC = new System.Windows.Forms.ToolStripMenuItem();
-			this.menu_IM_D = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_SaveDVPL = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_OpenDVPL = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pb_ShowCrosshair)).BeginInit();
@@ -111,8 +113,10 @@
 			// 
 			this.menu_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_OpenTxt,
+            this.menu_OpenDVPL,
             this.menu_SaveTxt,
             this.menu_SaveAs,
+            this.menu_SaveDVPL,
             this.menu_Exit});
 			this.menu_File.Name = "menu_File";
 			this.menu_File.Size = new System.Drawing.Size(37, 20);
@@ -167,7 +171,7 @@
 			// menu_Refresh
 			// 
 			this.menu_Refresh.Name = "menu_Refresh";
-			this.menu_Refresh.Size = new System.Drawing.Size(180, 22);
+			this.menu_Refresh.Size = new System.Drawing.Size(113, 22);
 			this.menu_Refresh.Text = "Refresh";
 			// 
 			// menu_Settings
@@ -185,19 +189,19 @@
             this.menu_LanguageRU,
             this.menu_LanguageEN});
 			this.menu_Language.Name = "menu_Language";
-			this.menu_Language.Size = new System.Drawing.Size(180, 22);
+			this.menu_Language.Size = new System.Drawing.Size(142, 22);
 			this.menu_Language.Text = "Language";
 			// 
 			// menu_LanguageRU
 			// 
 			this.menu_LanguageRU.Name = "menu_LanguageRU";
-			this.menu_LanguageRU.Size = new System.Drawing.Size(180, 22);
+			this.menu_LanguageRU.Size = new System.Drawing.Size(119, 22);
 			this.menu_LanguageRU.Text = "Русский";
 			// 
 			// menu_LanguageEN
 			// 
 			this.menu_LanguageEN.Name = "menu_LanguageEN";
-			this.menu_LanguageEN.Size = new System.Drawing.Size(180, 22);
+			this.menu_LanguageEN.Size = new System.Drawing.Size(119, 22);
 			this.menu_LanguageEN.Text = "English";
 			// 
 			// menu_Render
@@ -205,7 +209,7 @@
 			this.menu_Render.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_SmoothMode});
 			this.menu_Render.Name = "menu_Render";
-			this.menu_Render.Size = new System.Drawing.Size(180, 22);
+			this.menu_Render.Size = new System.Drawing.Size(142, 22);
 			this.menu_Render.Text = "RenderMode";
 			// 
 			// menu_SmoothMode
@@ -220,8 +224,56 @@
             this.menu_IM_HQBC,
             this.menu_IM_D});
 			this.menu_SmoothMode.Name = "menu_SmoothMode";
-			this.menu_SmoothMode.Size = new System.Drawing.Size(180, 22);
+			this.menu_SmoothMode.Size = new System.Drawing.Size(147, 22);
 			this.menu_SmoothMode.Text = "SmoothMode";
+			// 
+			// menu_IM_BC
+			// 
+			this.menu_IM_BC.Name = "menu_IM_BC";
+			this.menu_IM_BC.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_BC.Text = "Bicubic";
+			// 
+			// menu_IM_BL
+			// 
+			this.menu_IM_BL.Name = "menu_IM_BL";
+			this.menu_IM_BL.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_BL.Text = "Bilinear";
+			// 
+			// menu_IM_H
+			// 
+			this.menu_IM_H.Name = "menu_IM_H";
+			this.menu_IM_H.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_H.Text = "High";
+			// 
+			// menu_IM_L
+			// 
+			this.menu_IM_L.Name = "menu_IM_L";
+			this.menu_IM_L.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_L.Text = "Low";
+			// 
+			// menu_IM_NN
+			// 
+			this.menu_IM_NN.Name = "menu_IM_NN";
+			this.menu_IM_NN.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_NN.Text = "NearestNeighbor";
+			// 
+			// menu_IM_HQBL
+			// 
+			this.menu_IM_HQBL.Name = "menu_IM_HQBL";
+			this.menu_IM_HQBL.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_HQBL.Text = "HighQualityBilinear";
+			// 
+			// menu_IM_HQBC
+			// 
+			this.menu_IM_HQBC.Name = "menu_IM_HQBC";
+			this.menu_IM_HQBC.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_HQBC.Text = "HighQualityBicubic";
+			// 
+			// menu_IM_D
+			// 
+			this.menu_IM_D.Name = "menu_IM_D";
+			this.menu_IM_D.Size = new System.Drawing.Size(177, 22);
+			this.menu_IM_D.Text = "Default";
 			// 
 			// lb_Layers
 			// 
@@ -367,53 +419,17 @@
 			this.rb_Back_Circle.Text = "Circle";
 			this.rb_Back_Circle.UseVisualStyleBackColor = true;
 			// 
-			// menu_IM_BC
+			// menu_SaveDVPL
 			// 
-			this.menu_IM_BC.Name = "menu_IM_BC";
-			this.menu_IM_BC.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_BC.Text = "Bicubic";
+			this.menu_SaveDVPL.Name = "menu_SaveDVPL";
+			this.menu_SaveDVPL.Size = new System.Drawing.Size(180, 22);
+			this.menu_SaveDVPL.Text = "SaveDVPL";
 			// 
-			// menu_IM_BL
+			// menu_OpenDVPL
 			// 
-			this.menu_IM_BL.Name = "menu_IM_BL";
-			this.menu_IM_BL.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_BL.Text = "Bilinear";
-			// 
-			// menu_IM_H
-			// 
-			this.menu_IM_H.Name = "menu_IM_H";
-			this.menu_IM_H.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_H.Text = "High";
-			// 
-			// menu_IM_L
-			// 
-			this.menu_IM_L.Name = "menu_IM_L";
-			this.menu_IM_L.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_L.Text = "Low";
-			// 
-			// menu_IM_NN
-			// 
-			this.menu_IM_NN.Name = "menu_IM_NN";
-			this.menu_IM_NN.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_NN.Text = "NearestNeighbor";
-			// 
-			// menu_IM_HQBL
-			// 
-			this.menu_IM_HQBL.Name = "menu_IM_HQBL";
-			this.menu_IM_HQBL.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_HQBL.Text = "HighQualityBilinear";
-			// 
-			// menu_IM_HQBC
-			// 
-			this.menu_IM_HQBC.Name = "menu_IM_HQBC";
-			this.menu_IM_HQBC.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_HQBC.Text = "HighQualityBicubic";
-			// 
-			// menu_IM_D
-			// 
-			this.menu_IM_D.Name = "menu_IM_D";
-			this.menu_IM_D.Size = new System.Drawing.Size(180, 22);
-			this.menu_IM_D.Text = "Default";
+			this.menu_OpenDVPL.Name = "menu_OpenDVPL";
+			this.menu_OpenDVPL.Size = new System.Drawing.Size(180, 22);
+			this.menu_OpenDVPL.Text = "OpenDVPL";
 			// 
 			// Form1
 			// 
@@ -488,6 +504,8 @@
 		private System.Windows.Forms.ToolStripMenuItem menu_IM_HQBL;
 		private System.Windows.Forms.ToolStripMenuItem menu_IM_HQBC;
 		private System.Windows.Forms.ToolStripMenuItem menu_IM_D;
+		private System.Windows.Forms.ToolStripMenuItem menu_OpenDVPL;
+		private System.Windows.Forms.ToolStripMenuItem menu_SaveDVPL;
 	}
 }
 

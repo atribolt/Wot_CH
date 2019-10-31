@@ -6,47 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace WoT_CH {
-	public enum FileState {
-		OK,
-		FileNotExists,
-		NoOpen
-	}
-	public interface IEditor {
-		/// <summary>
-		/// Текущий модифицируемый слой
-		/// </summary>
-		int ActiveLayer { get; set; }
-		/// <summary>
-		/// Путь к редактируемому файлу
-		/// </summary>
-		string Path { get; }
-		/// <summary>
-		/// Состояние чтения файла
-		/// </summary>
-		FileState State { get; }
-		
-		void Save();
-		void Reset();
-		void Open(string path);
-		void SaveAs(string path);
-		void SetOffset(int dx, int dy);
-
-
-		string[] Texs();
-		Layer[] GetLayers();
-
-		/// <summary>
-		/// Возвращает имя tex файла в активном слое
-		/// </summary>
-		string GetTex();
-		/// <summary>
-		/// Возвращает активный слой
-		/// </summary>
-		Layer  GetLayer();
-	}
-
 	public class Editor : IEditor {
 		TXT file;
+		TypeFile type = TypeFile.txt;
 		
 		public Editor() {
 			file = new TXT();
@@ -58,15 +20,20 @@ namespace WoT_CH {
 		public FileState State { get; private set; } = FileState.NoOpen;
 
 		public void Save() {
-			if(State == FileState.OK)
-				File.WriteAllText(Path, file.ToString());
+			if(State == FileState.OK) {
+				if(type == TypeFile.txt)
+					File.WriteAllText(Path, file.ToString());
+				else {
+					File.WriteAllBytes(Path, DVPL.ToDVPL(file.ToString()));
+				}
+			}
 		}
 		public void Reset() {
-			if(State == FileState.OK)
-				file = new TXT(File.ReadAllText(Path));
+			if(State == FileState.OK) Open(Path, type);
 		}
-		public void Open(string path) {
+		public void Open(string path, TypeFile type) {
 			FileState preview = State;
+
 			if (!File.Exists(path)){
 				if(preview != FileState.OK)
 					State = FileState.FileNotExists;
@@ -80,13 +47,25 @@ namespace WoT_CH {
 			}
 
 			Path = path;
-			file = new TXT(File.ReadAllText(path));
+			string data = File.ReadAllText(Path);
+			if(type == TypeFile.txt) {
+				file = new TXT(data);
+			}
+			else {
+				file = new TXT(DVPL.Parse(data));
+			}
 
 			State = FileState.OK;
 		}
+
 		public void SaveAs(string path) {
 			if(State == FileState.OK) {
-				File.WriteAllText(path, file.ToString());
+				if (System.IO.Path.GetExtension(path) == "dvpl") {
+					File.WriteAllBytes(path, DVPL.ToDVPL(file.ToString()));
+				}
+				else {
+					File.WriteAllText(path, file.ToString());
+				}
 				Path = path;
 			}
 		}

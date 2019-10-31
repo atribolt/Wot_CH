@@ -20,6 +20,7 @@ namespace WoT_CH {
 		int CountAtlases = 0;
 
 		Bitmap tile;
+
 		Bitmap ScaleTile {
 			get {
 				try {
@@ -52,6 +53,8 @@ namespace WoT_CH {
 			iForm.BackgroundUpdate += DrawTile;
 			iForm.ChangeTileScale += SetScale;
 			iForm.ChangeInterpolationTile += SetInterpolation;
+			iForm.FileOpenDVPLClk += OpenDVPL;
+			iForm.FileSaveDVPL += SaveDVPL;
 
 			iForm.DisableBtns();
 		}
@@ -62,17 +65,32 @@ namespace WoT_CH {
 			od.Filter = Words.Get(Key.TextFile) + " | *.txt";
 
 			if(od.ShowDialog() == DialogResult.OK) {
-				iEdit.Open(od.FileName);
+				iEdit.Open(od.FileName, TypeFile.txt);
 				FindAtlas(iEdit.Texs());
 				SetForm();
 			}
 		}
+		void OpenDVPL() {
+			OpenFileDialog od = new OpenFileDialog();
+			od.Filter = Words.Get(Key.TextFile) + " | *.dvpl";
+
+			if(od.ShowDialog() == DialogResult.OK) {
+				iEdit.Open(od.FileName, TypeFile.dvpl);
+				FindAtlas(iEdit.Texs());
+				SetForm();
+			}
+		}
+
 		void Reset() {
 			iEdit.Reset();
 			Point offset = iEdit.GetLayer().Offset;
 
 			iForm.SetNumerics(offset.X, offset.Y);
 			DrawTile();
+		}
+
+		void SaveDVPL() {
+			iEdit.SaveAs(iEdit.Path + ".dvpl");
 		}
 		void SaveFile() {
 			iEdit.Save();
@@ -85,7 +103,7 @@ namespace WoT_CH {
 		}
 		void SaveAsFile() {
 			SaveFileDialog od = new SaveFileDialog();
-			od.Filter = Words.Get(Key.TextFile) + " | *.txt";
+			od.Filter = Words.Get(Key.TextFile) + " | *.txt | dvpl | *.dvpl ";
 
 			if(od.ShowDialog() == DialogResult.OK) {
 				iEdit.SaveAs(od.FileName);
@@ -122,10 +140,12 @@ namespace WoT_CH {
 		}
 
 		void EditDataLayer(int ox, int oy) {
-			iEdit.SetOffset(ox, oy);
+			if (PNG) {
+				iEdit.SetOffset(ox, oy);
 			
-			tile = TileFromLayer();
-			DrawTile();
+				tile = TileFromLayer();
+				DrawTile();
+			}
 		}
 
 		void SetBackground(BackImage bgrnd) {
@@ -171,12 +191,14 @@ namespace WoT_CH {
 
 			for(int i = 0; i < texs.Length; ++i) {
 				string name = Path.ChangeExtension(texs[i], ".png");
-
-				if(File.Exists(dir + name)) ++CountAtlases;
+				string nameDVPL = Path.ChangeExtension(texs[i], ".png.dvpl");
+				if(File.Exists(dir + name) || File.Exists(dir + nameDVPL)) ++CountAtlases;
 				else {
 					name = Path.ChangeExtension(texs[i], ".webp");
-					if(File.Exists(dir + name)) {
+					nameDVPL = Path.ChangeExtension(texs[i], ".webp.dvpl");
+					if(File.Exists(dir + name) || File.Exists(dir + nameDVPL)) {
 						PNG = false;
+						
 						
 						Err.Show(Key.ProgramDontWEBPformat, Key.Exception);
 
@@ -196,27 +218,31 @@ namespace WoT_CH {
 				string name = iEdit.GetTex();
 
 				name = Path.ChangeExtension(name, ".png");
+				
 
+				if(!File.Exists(dir + name)) {
+					string nameDVPL = Path.ChangeExtension(name, ".png.dvpl");
 
-				if (File.Exists(dir + name)) {
-					res = new Bitmap(dir + name);
-
-					if( l.Tile.X > res.Width  || 
-						l.Tile.Y > res.Height ||
-						l.Tile.X < 0 ||
-						l.Tile.Y < 0) 
-					{
-						Err.Show(Key.TileOverImage, Key.Error);
-						MessageBox.Show(Words.Get(Key.TileSetZeroPosition));
-						l.Tile.X = 0;
-						l.Tile.Y = 0;
+					if(!File.Exists(dir + nameDVPL)){
+						Err.Show(Key.AtlasNotExists, Key.Error);
+						return res;
 					}
-						
-					res = res.Clone(l.Tile, res.PixelFormat);
+					else {
+						name = nameDVPL;
+					}
 				}
-				else {
-					Err.Show(Key.AtlasNotExists, Key.Error);
-				}
+				res = new Bitmap(dir + name);
+				if( l.Tile.X > res.Width  || 
+					l.Tile.Y > res.Height ||
+					l.Tile.X < 0 ||
+					l.Tile.Y < 0) 
+				{
+					Err.Show(Key.TileOverImage, Key.Error);
+					MessageBox.Show(Words.Get(Key.TileSetZeroPosition));
+					l.Tile.X = 0;
+					l.Tile.Y = 0;
+				}		
+				res = res.Clone(l.Tile, res.PixelFormat);
 			}
 
 			return res;

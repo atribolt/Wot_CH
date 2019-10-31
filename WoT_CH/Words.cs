@@ -46,7 +46,9 @@ namespace WoT_CH {
 		Settings,					//= "Настройки"
 		RenderMode,					//= "Отображение"
 		SmoothMode,					//= "Сглаживание тайла"
-		Language					//= "Язык"
+		Language,					//= "Язык"
+		SaveDVPL,					//= "Сохранить в dvpl"
+		OpenDVPL					//= "Открыть dvpl"
 	}
 	
 	public static class Words {

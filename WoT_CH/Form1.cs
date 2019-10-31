@@ -10,43 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WoT_CH {
-	public enum BackImage {
-		Cross,
-		GameCircle,
-		SimpleCircle
-	}
-	public interface IForm1 {
-		event Action ExitClk;
-		event Action AboutClk;
-		event Action ResetFile;
-		event Action FormResize;
-		event Action FileOpenClk;
-		event Action FileSaveClk;
-		event Action FileSaveAsClk;
-		event Action BackgroundUpdate;
-		
-		event Action<int> ChangeLayer;
-		event Action<int> ChangeTileScale;
-		event Action<int, int> ChangeOffset;
-		event Action<BackImage> ChangeImage;
-		event Action<InterpolationMode> ChangeInterpolationTile;
-
-		PictureBox ShowTile { get; }
-
-		void SetNumerics(int x, int y);
-		void SetLayers(string[] layersData);
-		void SetCountImgs(int count);
-		void SetLayerData(int id, string data);
-		void SetBackground(string pathImg);
-
-		void EnableBtns();
-		void DisableBtns();
-	}
-
 	public partial class Form1 : Form, IForm1 {
-		const int MIN_TILE_SCALE = 1;
-		const int MAX_TILE_SCALE = 20;
-	
+		
 		public PictureBox ShowTile {
 			get { return pb_ShowCrosshair; }
 		}
@@ -54,7 +19,6 @@ namespace WoT_CH {
 		public Form1() {
 			InitializeComponent();
 			Words.ChangeLang += AppLanguage;
-
 			
 			AppLanguage();
 			SetEventsMenu();
@@ -63,7 +27,6 @@ namespace WoT_CH {
 		}
 
 		void AppLanguage() {
-			gb_Back.Text			= Words.Get(Key.Background);
 			menu_FAQ.Text			= Words.Get(Key.Info);
 			menu_Edit.Text			= Words.Get(Key.Edit);
 			menu_Exit.Text			= Words.Get(Key.Exit);
@@ -76,10 +39,13 @@ namespace WoT_CH {
 			menu_SaveTxt.Text		= Words.Get(Key.Save);
 			menu_Settings.Text		= Words.Get(Key.Settings);
 			menu_Language.Text		= Words.Get(Key.Language);
+			menu_OpenDVPL.Text		= Words.Get(Key.OpenDVPL);
+			menu_SaveDVPL.Text		= Words.Get(Key.SaveDVPL);
 			menu_SmoothMode.Text	= Words.Get(Key.SmoothMode);
 
 			lbl_Images.Text			= Words.Get(Key.ImageFound);
 
+			gb_Back.Text			= Words.Get(Key.Background);
 			gb_SetShift.Text		= Words.Get(Key.Shift);
 
 			rb_Back_Cross.Text		= Words.Get(Key.Cross);
@@ -88,22 +54,24 @@ namespace WoT_CH {
 		}
 		
 		void SetEventsMenu() {
-			menu_Exit.Click    += mExitClk;
-			menu_About.Click   += mAboutClk;
-			menu_SaveAs.Click  += mSaveAsClk;
-			menu_OpenTxt.Click += mOpenClk;
-			menu_SaveTxt.Click += mSaveClk;
-			menu_Refresh.Click += mRefreshClk;
+			menu_Exit.Click     += mExitClk;
+			menu_About.Click    += mAboutClk;
+			menu_SaveAs.Click   += mSaveAsClk;
+			menu_OpenTxt.Click  += mOpenClk;
+			menu_SaveTxt.Click  += mSaveClk;
+			menu_Refresh.Click  += mRefreshClk;
+			menu_OpenDVPL.Click += mOpenDvplClk;
+			menu_SaveDVPL.Click += mSaveDvplClk;
 
 			menu_LanguageRU.Click += langUpdate;
 			menu_LanguageEN.Click += langUpdate;
 
-			menu_IM_BC.Click += setInterpolation;
-			menu_IM_BL.Click += setInterpolation;
-			menu_IM_D.Click += setInterpolation;
-			menu_IM_L.Click += setInterpolation;
-			menu_IM_H.Click += setInterpolation;
-			menu_IM_NN.Click += setInterpolation;
+			menu_IM_D.Click    += setInterpolation;
+			menu_IM_L.Click    += setInterpolation;
+			menu_IM_H.Click    += setInterpolation;
+			menu_IM_BC.Click   += setInterpolation;
+			menu_IM_BL.Click   += setInterpolation;
+			menu_IM_NN.Click   += setInterpolation;
 			menu_IM_HQBC.Click += setInterpolation;
 			menu_IM_HQBL.Click += setInterpolation;
 		}
@@ -118,14 +86,14 @@ namespace WoT_CH {
 			rb_Back_Circle.Click	 += changeBackground;
 			rb_Back_GameCircle.Click += changeBackground;
 			
+			this.ResizeEnd   += formResize;
 			this.FormClosing += formClosing;
-			this.ResizeEnd += formResize;
 			
 			
-			pb_ShowCrosshair.MouseWheel += scaleTilSet;
-			pb_ShowCrosshair.MouseClick += changeBackColor;
+			pb_ShowCrosshair.MouseWheel				+= scaleTilSet;
+			pb_ShowCrosshair.MouseClick				+= changeBackColor;
+			pb_ShowCrosshair.MouseMove				+= moveTile;
 			pb_ShowCrosshair.BackgroundImageChanged += backgroundChanged;
-			pb_ShowCrosshair.MouseMove += moveTile;
 		}
 
 		#region >>> IForm1
@@ -135,7 +103,9 @@ namespace WoT_CH {
 		public event Action FormResize		 = delegate{ };
 		public event Action FileOpenClk      = delegate{ };
 		public event Action FileSaveClk      = delegate{ };
+		public event Action FileSaveDVPL	 = delegate{ };
 		public event Action FileSaveAsClk    = delegate{ };
+		public event Action FileOpenDVPLClk  = delegate{ };
 		public event Action BackgroundUpdate = delegate{ };
 
 		public event Action<int> ChangeLayer	   = delegate{ };
@@ -169,29 +139,33 @@ namespace WoT_CH {
 		}
 
 		public void DisableBtns() {
-			nud_ShiftX.Enabled = false;
-			nud_ShiftY.Enabled = false;
-			menu_SaveAs.Enabled = false;
-			menu_Refresh.Enabled = false;
-			menu_SaveTxt.Enabled = false;
+			nud_ShiftX.Enabled    = false;
+			nud_ShiftY.Enabled    = false;
+			menu_SaveAs.Enabled   = false;
+			menu_Refresh.Enabled  = false;
+			menu_SaveTxt.Enabled  = false;
+			menu_SaveDVPL.Enabled = false;
 		}
 		public void EnableBtns() {
-			nud_ShiftX.Enabled = true;
-			nud_ShiftY.Enabled = true;
-			menu_SaveAs.Enabled = true;
-			menu_Refresh.Enabled = true;
-			menu_SaveTxt.Enabled = true;
+			nud_ShiftX.Enabled    = true;
+			nud_ShiftY.Enabled    = true;
+			menu_SaveAs.Enabled   = true;
+			menu_Refresh.Enabled  = true;
+			menu_SaveTxt.Enabled  = true;
+			menu_SaveDVPL.Enabled = true;
 		}
 		#endregion
 
 		#region >>> Events menu
-		void mSaveClk  (object o, EventArgs e) => FileSaveClk();
-		void mExitClk  (object o, EventArgs e) => this.Close();
-		void mOpenClk  (object o, EventArgs e) => FileOpenClk();
-		void mAboutClk (object o, EventArgs e) => AboutClk();
-		void mSaveAsClk(object o, EventArgs e) => FileSaveAsClk();
-		void mRefreshClk(object o, EventArgs e) => ResetFile();
-		
+		void mSaveClk     (object o, EventArgs e) => FileSaveClk();
+		void mExitClk     (object o, EventArgs e) => this.Close();
+		void mOpenClk     (object o, EventArgs e) => FileOpenClk();
+		void mAboutClk    (object o, EventArgs e) => AboutClk();
+		void mSaveAsClk   (object o, EventArgs e) => FileSaveAsClk();
+		void mRefreshClk  (object o, EventArgs e) => ResetFile();
+		void mSaveDvplClk (object o, EventArgs e) => FileSaveDVPL();
+		void mOpenDvplClk (object o, EventArgs e) => FileOpenDVPLClk();
+
 		void langUpdate(object o, EventArgs e) {
 			if ((ToolStripMenuItem)o == menu_LanguageEN) Words.ReadLanguageCFG(Lang.en); else 
 			if ((ToolStripMenuItem)o == menu_LanguageRU) Words.ReadLanguageCFG(Lang.ru);
@@ -218,8 +192,7 @@ namespace WoT_CH {
 		#region >>> EventOther
 		void changeBackground(object o, EventArgs e) {
 			BackImage back = BackImage.SimpleCircle;
-			if (rb_Back_Cross.Checked)
-				back = BackImage.Cross;
+			if (rb_Back_Cross.Checked) back = BackImage.Cross;
 			ChangeImage(back);
 		}
 
